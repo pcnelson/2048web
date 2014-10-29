@@ -282,9 +282,9 @@ GameManager.prototype.aimove = function() {
     xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET","ai.py?board=1,2,3&score=72",false);
     xmlhttp.send();
-    answer = xmlhttp.responseText;
-    move = answer.split("\n")[0];
-    ailog("AI says: " + move);
+    answer = xmlhttp.responseText.split("\n");
+    move   = (answer.length > 0 ? answer[0] : "No answer");
+    ailog("AI: " + move + (answer.length > 1 ? " :: " + answer[1] : ""));
 
     for (var n in DirNames) {
 	if (DirNames[n] == move) {

@@ -12,11 +12,9 @@ def handler(req):
         board = pr['board'][0].split(",")
         score = pr['score'][0]
         move = ai(board, score)
-
-        req.write(move + "\n#" + str(board) + "\n#" + score + "\n")
-
+        req.write(move)
         return apache.OK
 
 def ai(board, score):
 	moves = [ 'up', 'right', 'down', 'left' ]
-	return moves[randint(0, 3)]
+	return moves[randint(0, 3)] + "\nRandom"
