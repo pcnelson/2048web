@@ -17,4 +17,5 @@ def handler(req):
 
 def ai(board, score):
 	moves = [ 'up', 'right', 'down', 'left' ]
-	return moves[randint(0, 3)] + "\nRandom"
+	return moves[randint(0, 3)] + "\nRand [" + ','.join(board) + "]\n"
+

@@ -192,7 +192,9 @@ GameManager.prototype.move = function (direction) {
       this.over = true; // Game over!
     }
 
-    ailog(sprintf("%5s: %6d (%d,%d:%d)", DirNames[direction], this.score, tile.x, tile.y, tile.value));
+    ailog(sprintf("MV:%-5s :: %4d (%d,%d:%d) [%s]", 
+		  DirNames[direction], this.score, tile.x, tile.y, tile.value,
+		  this.board()));
     this.actuate();
   }
 };
@@ -278,13 +280,29 @@ GameManager.prototype.positionsEqual = function (first, second) {
   return first.x === second.x && first.y === second.y;
 };
 
+GameManager.prototype.board = function() {
+    cells = this.grid.cells;
+    board = [];
+    for (row = 0; row < this.size; row++) {
+	for (col = 0; col < this.size; col++) {
+	    tile = cells[col][row];
+	    board.push(tile ? tile.value : 0);
+	}
+    }
+    return board.join(",")
+};
+
 GameManager.prototype.aimove = function() {
+    // List the board
+    score = this.score;
+    board = this.board();
+
     xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("GET","ai.py?board=1,2,3&score=72",false);
+    xmlhttp.open("GET","ai.py?board="+board+"&score="+score,false);
     xmlhttp.send();
     answer = xmlhttp.responseText.split("\n");
     move   = (answer.length > 0 ? answer[0] : "No answer");
-    ailog("AI: " + move + (answer.length > 1 ? " :: " + answer[1] : ""));
+    ailog(sprintf("AI:%-5s%s", move, (answer.length > 1 ? " :: " + answer[1] : "")));
 
     for (var n in DirNames) {
 	if (DirNames[n] == move) {
