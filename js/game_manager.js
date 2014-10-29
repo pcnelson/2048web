@@ -293,17 +293,24 @@ GameManager.prototype.board = function() {
 };
 
 GameManager.prototype.aimove = function() {
-    // List the board
+    // URL to the AI includes the board and the score
     score = this.score;
     board = this.board();
-
+    aiqry = sprintf("ai.py?board=%s&score=%s", board, score);
+    // Pass any other url params on the page to the AI
+    extra = window.location.search.substring(1);
+    if (extra.length > 0) {
+	aiqry += "&" + extra
+    }
+    // Sync call the AI
     xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("GET","ai.py?board="+board+"&score="+score,false);
+    xmlhttp.open("GET",aiqry,false);
     xmlhttp.send();
+    // First line of response is the move, second line is optional explanation to log
     answer = xmlhttp.responseText.split("\n");
     move   = (answer.length > 0 ? answer[0] : "No answer");
     ailog(sprintf("AI:%-5s%s", move, (answer.length > 1 ? " :: " + answer[1] : "")));
-
+    // Map move to numeric direction used by the game, and move
     for (var n in DirNames) {
 	if (DirNames[n] == move) {
             this.move(n)
