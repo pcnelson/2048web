@@ -9,6 +9,7 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.inputManager.on("move", this.move.bind(this));
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
+  this.inputManager.on("aimove", this.aimove.bind(this));
 
   this.setup();
 }
@@ -72,6 +73,7 @@ GameManager.prototype.addRandomTile = function () {
     var tile = new Tile(this.grid.randomAvailableCell(), value);
 
     this.grid.insertTile(tile);
+    return tile;
   }
 };
 
@@ -95,6 +97,7 @@ GameManager.prototype.actuate = function () {
     bestScore:  this.storageManager.getBestScore(),
     terminated: this.isGameTerminated()
   });
+
 
 };
 
@@ -126,6 +129,8 @@ GameManager.prototype.moveTile = function (tile, cell) {
   tile.updatePosition(cell);
 };
 
+var DirNames = [ 'up', 'right', 'down', 'left' ];
+ 
 // Move tiles on the grid in the specified direction
 GameManager.prototype.move = function (direction) {
   // 0: up, 1: right, 2: down, 3: left
@@ -180,12 +185,14 @@ GameManager.prototype.move = function (direction) {
   });
 
   if (moved) {
-    this.addRandomTile();
+
+    var tile = this.addRandomTile();
 
     if (!this.movesAvailable()) {
       this.over = true; // Game over!
     }
 
+    ailog(sprintf("%5s: %6d (%d,%d:%d)", DirNames[direction], this.score, tile.x, tile.y, tile.value));
     this.actuate();
   }
 };
@@ -270,3 +277,19 @@ GameManager.prototype.tileMatchesAvailable = function () {
 GameManager.prototype.positionsEqual = function (first, second) {
   return first.x === second.x && first.y === second.y;
 };
+
+GameManager.prototype.aimove = function() {
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET","ai.py?board=1,2,3&score=72",false);
+    xmlhttp.send();
+    answer = xmlhttp.responseText;
+    move = answer.split("\n")[0];
+    ailog("AI says: " + move);
+
+    for (var n in DirNames) {
+	if (DirNames[n] == move) {
+            this.move(n)
+            return;
+	}
+    }
+}

@@ -66,6 +66,11 @@ KeyboardInputManager.prototype.listen = function () {
     if (!modifiers && event.which === 82) {
       self.restart.call(self, event);
     }
+
+    // X means do what the AI says
+    if (!modifiers && event.which === 88) {
+        self.emit("aimove")
+    }
   });
 
   // Respond to button presses
