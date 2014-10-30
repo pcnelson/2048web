@@ -320,10 +320,16 @@ GameManager.prototype.aimove = function() {
     }
 }
 
+// Handler for Shift-X to turn on/off continued play
 GameManager.prototype.aifinish = function() {
+    this.airun = !this.airun;
+    this.aiauto();
+}
+
+GameManager.prototype.aiauto = function() {
     game = this;
-    if (!game.isGameTerminated()) {
-	game.aimove();
-	setTimeout(function(){ game.aifinish(); }, 250);
-    }
+    if (game.isGameTerminated() || !game.airun)
+	return;
+    game.aimove();
+    setTimeout(function(){ game.aiauto(); }, 250);
 }
