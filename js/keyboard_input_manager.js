@@ -68,8 +68,11 @@ KeyboardInputManager.prototype.listen = function () {
     }
 
     // X means do what the AI says
-    if (!modifiers && event.which === 88) {
-        self.emit("aimove")
+    if (event.which === 88) {
+	if (event.shiftKey)
+	    self.emit("aifinish")
+        else if (!modifiers)
+            self.emit("aimove")
     }
   });
 

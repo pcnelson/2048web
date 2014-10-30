@@ -10,6 +10,7 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
   this.inputManager.on("aimove", this.aimove.bind(this));
+  this.inputManager.on("aifinish", this.aifinish.bind(this));
 
   this.setup();
 }
@@ -316,5 +317,13 @@ GameManager.prototype.aimove = function() {
             this.move(n)
             return;
 	}
+    }
+}
+
+GameManager.prototype.aifinish = function() {
+    game = this;
+    if (!game.isGameTerminated()) {
+	game.aimove();
+	setTimeout(function(){ game.aifinish(); }, 250);
     }
 }
