@@ -296,7 +296,7 @@ GameManager.prototype.aimove = function() {
     // URL to the AI includes the board and the score
     score = this.score;
     board = this.board();
-    aiqry = sprintf("ai.py?board=%s&score=%s", board, score);
+    aiqry = sprintf("/ai/ai.py?board=%s&score=%s", board, score);
     // Pass any other url params on the page to the AI
     extra = window.location.search.substring(1);
     if (extra.length > 0) {
