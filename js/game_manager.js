@@ -33,7 +33,7 @@ GameManager.prototype.isGameTerminated = function () {
   return this.over || (this.won && !this.keepPlaying);
 };
 
-GameManager.prototype.newId = function () {
+GameManager.prototype.newGameId = function () {
     d = new Date();
     return sprintf("%02d-%02d-%02d^%02d:%02d:%02d", 
 		   d.getFullYear() % 100, 1+d.getMonth(), d.getDate(),
@@ -52,22 +52,23 @@ GameManager.prototype.setup = function () {
     this.over        = previousState.over;
     this.won         = previousState.won;
     this.keepPlaying = previousState.keepPlaying;
-    this.gameId      = previousState.gameId;
+    this.gid         = previousState.gid;
   } else {
     this.grid        = new Grid(this.size);
     this.score       = 0;
     this.over        = false;
     this.won         = false;
     this.keepPlaying = false;
-    this.gameId      = this.newId();
+    this.gid         = this.newGameId();
     // Add the initial tiles
     this.addStartTiles();
   }
 
-  ailog(sprintf("Starting Game: %s", this.gameId));
+  ailog(sprintf("Starting Game: %s", this.gid));
 
-  // remember the chain of moves
+  // remember the chain of moves and turn off ai autoplay
   this.moveStack = [];
+  this.aiplayon = false;
 
   // Update the actuator
   this.actuate();
@@ -123,7 +124,7 @@ GameManager.prototype.serialize = function () {
     over:        this.over,
     won:         this.won,
     keepPlaying: this.keepPlaying,
-    gameId:      this.gameId
+    gid:         this.gid
   };
 };
 
@@ -315,12 +316,12 @@ GameManager.prototype.aimove = function() {
     // URL to the AI includes the board and the score
     score = this.score;
     board = this.board();
-    gameid = this.gameId;
+    gid   = this.gid;
     prior = "";
     for (c=5,x=this.moveStack.length-1; c>=0 && x>=0; c--, x--)
 	prior += DirCodes[this.moveStack[x]];
 
-    aiqry = sprintf("/ai/ai.py?board=%s&score=%s&id=%s&prior=%s", board, score, gameid, prior);
+    aiqry = sprintf("/ai/ai.py?board=%s&score=%s&gid=%s&prior=%s", board, score, gid, prior);
     // Pass any other url params on the page to the AI
     extra = window.location.search.substring(1);
     if (extra.length > 0) {
