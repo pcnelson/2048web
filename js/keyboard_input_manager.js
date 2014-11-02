@@ -67,10 +67,10 @@ KeyboardInputManager.prototype.listen = function () {
       self.restart.call(self, event);
     }
 
-    // X means do what the AI says
+    // X means let AI play
     if (event.which === 88) {
 	if (event.shiftKey)
-	    self.emit("aifinish")
+	    self.aiplay.call(self, event);
         else if (!modifiers)
             self.emit("aimove")
     }
@@ -79,6 +79,7 @@ KeyboardInputManager.prototype.listen = function () {
   // Respond to button presses
   this.bindButtonPress(".retry-button", this.restart);
   this.bindButtonPress(".restart-button", this.restart);
+  this.bindButtonPress(".aiplay-button", this.aiplay);
   this.bindButtonPress(".keep-playing-button", this.keepPlaying);
 
   // Respond to swipe events
@@ -138,6 +139,11 @@ KeyboardInputManager.prototype.listen = function () {
 KeyboardInputManager.prototype.restart = function (event) {
   event.preventDefault();
   this.emit("restart");
+};
+
+KeyboardInputManager.prototype.aiplay = function (event) {
+  event.preventDefault();
+  this.emit("aiplay");
 };
 
 KeyboardInputManager.prototype.keepPlaying = function (event) {

@@ -10,7 +10,7 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
   this.inputManager.on("aimove", this.aimove.bind(this));
-  this.inputManager.on("aifinish", this.aifinish.bind(this));
+  this.inputManager.on("aiplay", this.aiplay.bind(this));
 
   this.setup();
 }
@@ -33,6 +33,13 @@ GameManager.prototype.isGameTerminated = function () {
   return this.over || (this.won && !this.keepPlaying);
 };
 
+GameManager.prototype.newId = function () {
+    d = new Date();
+    return sprintf("%02d-%02d-%02d^%02d:%02d:%02d", 
+		   d.getFullYear() % 100, 1+d.getMonth(), d.getDate(),
+		   d.getHours(), d.getMinutes(), d.getSeconds());
+}
+
 // Set up the game
 GameManager.prototype.setup = function () {
   var previousState = this.storageManager.getGameState();
@@ -45,16 +52,22 @@ GameManager.prototype.setup = function () {
     this.over        = previousState.over;
     this.won         = previousState.won;
     this.keepPlaying = previousState.keepPlaying;
+    this.gameId      = previousState.gameId;
   } else {
     this.grid        = new Grid(this.size);
     this.score       = 0;
     this.over        = false;
     this.won         = false;
     this.keepPlaying = false;
-
+    this.gameId      = this.newId();
     // Add the initial tiles
     this.addStartTiles();
   }
+
+  ailog(sprintf("Starting Game: %s", this.gameId));
+
+  // remember the chain of moves
+  this.moveStack = [];
 
   // Update the actuator
   this.actuate();
@@ -109,7 +122,8 @@ GameManager.prototype.serialize = function () {
     score:       this.score,
     over:        this.over,
     won:         this.won,
-    keepPlaying: this.keepPlaying
+    keepPlaying: this.keepPlaying,
+    gameId:      this.gameId
   };
 };
 
@@ -131,6 +145,7 @@ GameManager.prototype.moveTile = function (tile, cell) {
 };
 
 var DirNames = [ 'up', 'right', 'down', 'left' ];
+var DirCodes = [ 'u', 'r', 'd', 'l' ];
  
 // Move tiles on the grid in the specified direction
 GameManager.prototype.move = function (direction) {
@@ -186,6 +201,8 @@ GameManager.prototype.move = function (direction) {
   });
 
   if (moved) {
+    // remember this move
+    this.moveStack.push(direction);
 
     var tile = this.addRandomTile();
 
@@ -293,11 +310,17 @@ GameManager.prototype.board = function() {
     return board.join(",")
 };
 
+
 GameManager.prototype.aimove = function() {
     // URL to the AI includes the board and the score
     score = this.score;
     board = this.board();
-    aiqry = sprintf("/ai/ai.py?board=%s&score=%s", board, score);
+    gameid = this.gameId;
+    prior = "";
+    for (c=5,x=this.moveStack.length-1; c>=0 && x>=0; c--, x--)
+	prior += DirCodes[this.moveStack[x]];
+
+    aiqry = sprintf("/ai/ai.py?board=%s&score=%s&id=%s&prior=%s", board, score, gameid, prior);
     // Pass any other url params on the page to the AI
     extra = window.location.search.substring(1);
     if (extra.length > 0) {
@@ -320,15 +343,16 @@ GameManager.prototype.aimove = function() {
     }
 }
 
-// Handler for Shift-X to turn on/off continued play
-GameManager.prototype.aifinish = function() {
-    this.airun = !this.airun;
+// Handler for Button or Shift-X to turn on/off continued play
+GameManager.prototype.aiplay = function() {
+    this.aiplayon = !this.aiplayon;
     this.aiauto();
 }
 
+// When in auto-play mode, make a move and queue up the next
 GameManager.prototype.aiauto = function() {
     game = this;
-    if (game.isGameTerminated() || !game.airun)
+    if (game.isGameTerminated() || !game.aiplayon)
 	return;
     game.aimove();
     setTimeout(function(){ game.aiauto(); }, 250);
