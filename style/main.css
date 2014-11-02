@@ -61,7 +61,7 @@ h1.title {
   font-weight: bold;
   border-radius: 3px;
   color: white;
-  margin-top: 8px;
+  margin: 8px;
   text-align: center; }
   .score-container:after, .best-container:after {
     position: absolute;
@@ -485,6 +485,21 @@ hr {
   float: left;
   line-height: 42px;
   margin-bottom: 0; }
+
+.aiplay-button {
+  display: inline-block;
+  background: #8f7a66;
+  border-radius: 3px;
+  margin: 0 7px;
+  padding: 0 20px;
+  text-decoration: none;
+  color: #f9f6f2;
+  height: 40px;
+  line-height: 42px;
+  display: block;
+  text-align: center;
+  float: right; }
+
 
 .restart-button {
   display: inline-block;
