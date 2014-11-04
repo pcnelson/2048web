@@ -68,6 +68,7 @@ GameManager.prototype.setup = function () {
 
   // remember the chain of moves and turn off ai autoplay
   this.moveStack = [];
+  this.dropStack = [];
   this.aiplayon = false;
 
   // Update the actuator
@@ -207,13 +208,15 @@ GameManager.prototype.move = function (direction) {
 
     var tile = this.addRandomTile();
 
+    msg = sprintf("MV:%-5s :: %4d", DirNames[direction], this.score);
     if (!this.movesAvailable()) {
-      this.over = true; // Game over!
+	this.over = true; // Game over!
+	ailog(msg + " Done!")
+    } else {
+	// remember drop as row, col, val
+	this.dropStack.push([tile.y, tile.x, tile.value])
+	//ailog(sprintf("%s (%d,%d:%d)", msg, tile.x, tile.y, tile.value));
     }
-
-    ailog(sprintf("MV:%-5s :: %4d (%d,%d:%d) [%s]", 
-		  DirNames[direction], this.score, tile.x, tile.y, tile.value,
-		  this.board()));
     this.actuate();
   }
 };
@@ -317,11 +320,20 @@ GameManager.prototype.aimove = function() {
     score = this.score;
     board = this.board();
     gid   = this.gid;
+    // List first letters of up to five most recent moves
     prior = "";
-    for (c=5,x=this.moveStack.length-1; c>=0 && x>=0; c--, x--)
-	prior += DirCodes[this.moveStack[x]];
+    if (this.moveStack.length > 0) {
+	for (c=5,x=this.moveStack.length-1; c>=0 && x>=0; c--, x--)
+	    prior += DirCodes[this.moveStack[x]];
+    }
+    // Show the last random tile drop
+    drop  = "";
+    if (this.dropStack.length > 0)
+	drop = this.dropStack[this.dropStack.length-1].join(",");
 
-    aiqry = sprintf("/ai/ai.py?board=%s&score=%s&gid=%s&prior=%s", board, score, gid, prior);
+    aiqry = sprintf("/ai/ai.py?board=%s&score=%s&gid=%s%s%s", board, score, gid, 
+		    (prior.length > 0 ? "&prior=" + prior : ""),
+		    (drop.length > 0 ? "&drop=" + drop : ""));
     // Pass any other url params on the page to the AI
     extra = window.location.search.substring(1);
     if (extra.length > 0) {
@@ -334,7 +346,10 @@ GameManager.prototype.aimove = function() {
     // First line of response is the move, second line is optional explanation to log
     answer = xmlhttp.responseText.split("\n");
     move   = (answer.length > 0 ? answer[0] : "No answer");
-    ailog(sprintf("AI:%-5s%s", move, (answer.length > 1 ? " :: " + answer[1] : "")));
+    msg = sprintf("AI:%-5s%s%s", move, 
+		  (drop.length > 0 ? " after " + drop : ""),
+		  (answer.length > 1 && answer[1].length > 0 ? " :: " + answer[1] : ""));
+    ailog(msg);
     // Map move to numeric direction used by the game, and move
     for (var n in DirNames) {
 	if (DirNames[n] == move) {
