@@ -486,6 +486,22 @@ hr {
   line-height: 42px;
   margin-bottom: 0; }
 
+#ailog {
+  position: absolute; 
+  left: 20px;
+  top: 275px;
+  width: 340px;
+  max-width: 340px; 
+  height: 400px;
+  max-height: 400px; 
+  padding: 3px; 
+  border: 1px solid red;
+  font-family: "courier"; 
+  font-size: x-small;
+  overflow-x: scroll; 
+  overflow-y: scroll; 
+}
+
 .aiplay-button {
   display: inline-block;
   background: #8f7a66;
