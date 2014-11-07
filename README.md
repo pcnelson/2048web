@@ -1,20 +1,22 @@
 # 2048
-A derivation of [2048] by https://github.com/gabrielecirulli/2048
-that adds an option for automated play.
+A derivation of [2048] by https://github.com/gabrielecirulli/2048 that adds automated play.
 
-Play the modified version here: http://2048.calebn.com
-
-http://2048.calebn.com/game.htm?ai=rand&arg=
+Play the modified version here:
+* http://2048.calebn.com
+* http://2048.calebn.com/game.htm?ai=rand&arg=
 
 The modified game adds:
-* an "AI Play" button to toggle automated play
-* Ctrl-X also toggles automated play
-* X makes a single automated move
+* an "AI Play" button or Control-X to toggle automated play
+* X to make a single automated move
+* a log window of moves and messages from the AI
 
-The automated player is implemented as a web service at ai.py on
-the game host that is passed info about the game's current state and
+The automated player is implemented as a web service at ai.py on the
+game host that's passed info about the game's current state and
 returns a text response with the first line oneof up,left,right,down
 and the second line as an optional message.
+
+Probe the web service here:
+http://2048.calebn.com/ai/ai.py?ai=left&score=228&board=32,16,8,2,16,4,0,0,2,0,0,0,2,2,0,0&prior=lullll&drop=3,1,2
 
 Arguments to the ai service include
 *  ai     which algorithm to use (specified on the url to the game)
