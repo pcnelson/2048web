@@ -6,7 +6,7 @@ Play the modified version here:
 * http://2048.calebn.com/game.htm?ai=rand&arg=
 
 The modified game adds:
-* an "AI Play" button or Control-X to toggle automated play
+* an "AI Play" button or Shift-X to toggle automated play
 * X to make a single automated move
 * a log window of moves and messages from the AI
 
