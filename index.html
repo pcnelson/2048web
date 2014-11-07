@@ -6,23 +6,28 @@
 <h1>2048 AI development host</h1>
 
 <h2>Launch game.htm with ai, arg</h2>
+Supported AIs so far are: rand, left
+<p/>
 <form method='get' action="game.htm">
 <table border=0>
-<tr><td>AI</td><td><input name='ai'  value='rand' type='text' size='30' /></td></tr>
+<tr><td>AI</td><td><input name='ai'  value='left' type='text' size='30' /></td></tr>
 <tr><td>Arg</td><td><input name='arg' value='' type='text' size='30' /></td></tr>
 <tr><td><input type="submit" value="Launch"/></td><td></td></tr>
 </table>
 </form>
 
-<h2>Probe /ai/ai.py with ai, arg, board, score</h2>
+<h2>Probe /ai/ai.py with same call made by game.htm</h2>
+Response should be the move on the first line followed by an optional message
+<p/>
 <form method='get' action="/ai/ai.py">
 <table border=0>
-<tr><td>ai   </td><td><input name='ai'    value='rand' type='text' size='10' /></td></tr>
-<tr><td>arg  </td><td><input name='arg'   value=''     type='text' size='40' /></td></tr>
-<tr><td>gid  </td><td><input name='gid'   value='test' type='text' size='10' /></td></tr>
-<tr><td>prior</td><td><input name='prior' value='lu'   type='text' size='10' /></td></tr>
-<tr><td>score</td><td><input name='score' value=''     type='text' size='10' /></td></tr>
-<tr><td>board</td><td><input name='board' value='2,2,0,0,  0,0,0,0,  0,0,0,0,  0,0,0,0' type='text' size='50' /></td></tr>
+<tr><td>ai   </td><td><input name='ai'    value='left' type='text' size='10' /></td><td>name of Ai algo</td></tr>
+<tr><td>arg  </td><td><input name='arg'   value=''     type='text' size='30' /></td><td>optional args to the algo</td></tr>
+<tr><td>gid  </td><td><input name='gid'   value='test' type='text' size='10' /></td><td>game id for tracking</td></tr>
+<tr><td>prior</td><td><input name='prior' value='lu'   type='text' size='10' /></td><td>most recent prior moves (e.g. uddl) sent by game</td></tr>
+<tr><td>score</td><td><input name='score' value=''     type='text' size='10' /></td><td>current score</td></tr>
+<tr><td>drop</td><td><input name='drop' value='0,0,0' type='text' size='10' /></td><td>row,col,value of last cell added by game</td></tr>
+<tr><td>board</td><td><input name='board' value='2,2,0,0,  0,0,0,0,  0,0,0,0,  0,0,0,0' type='text' size='50' /></td><td>game board by rows</td></tr>
 <tr><td><input type="submit" value="Ask AI"/></td><td></td></tr>
 </table>
 </form>
