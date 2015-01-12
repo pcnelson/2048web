@@ -331,7 +331,7 @@ GameManager.prototype.aimove = function() {
     if (this.dropStack.length > 0)
 	drop = this.dropStack[this.dropStack.length-1].join(",");
 
-    aiqry = sprintf("/ai/ai.py?board=%s&score=%s&gid=%s%s%s", board, score, gid, 
+    aiqry = sprintf("/ai?board=%s&score=%s&gid=%s%s%s", board, score, gid, 
 		    (prior.length > 0 ? "&prior=" + prior : ""),
 		    (drop.length > 0 ? "&drop=" + drop : ""));
     // Pass any other url params on the page to the AI
