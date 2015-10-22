@@ -6,17 +6,18 @@
 <h1>2048 AI local development</h1>
 
 <h2>Launch game.htm with ai, arg</h2>
-Supported AIs so far are: rand, left
+Supported AIs so far are: rand, left, corner, ul, score, quality, and lookahead
+For descriptions and arguements for each ai, click <a href="/ais.html">here</a>
 <p/>
 <form method='get' action="game.htm">
 <table border=0>
-<tr><td>AI</td><td><input name='ai'  value='left' type='text' size='30' /></td></tr>
-<tr><td>Arg</td><td><input name='arg' value='' type='text' size='30' /></td></tr>
+<tr><td>AI</td><td><input name='ai'  value='lookahead' type='text' size='30' /></td></tr>
+<tr><td>Arg</td><td><input name='arg' value='4, 3' type='text' size='30' /></td></tr>
 <tr><td><input type="submit" value="Launch"/></td><td></td></tr>
 </table>
 </form>
 
-<h2>Probe /ai/ai.py with same call made by game.htm</h2>
+<h2>Probe /ai/ai.py with same call made by game.htm for debugging purposes</h2>
 Response should be the move on the first line followed by an optional message
 <p/>
 <form method='get' action="/ai/ai.py">
