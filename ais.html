@@ -7,17 +7,17 @@
  <body>
  <h1> 2048 AIs </h1>
  
- <h2><p>
- Rand - AI chooses a random direction every move. No arguments.<br />
+ <p>
+ Rand - AI chooses a random direction every move. The AI will default to this if it does not recognize your input. No arguments.<br /><br />
  Left - AI will go the left if possible, then will try going up, then move randomly if it can't do either. No arguments.<br /><br />
- Corner/UL - AI will use the history of its previous moves to alternate moving up and left, and other directions (non-randomly) if it can not do those. No arguments.<br /><br />
+ Corner/UL (both corner and ul will work as inputs) - AI will use the history of its previous moves to alternate moving up and left, and other directions (non-randomly) if it can not do those. No arguments.<br /><br />
  Score - The AI will simulate the board after it decided each of its possible choices and choose the one that increases score the most. No arguments.<br /><br />
  Quality - Like score, except the AI will evaluate based off a custom quality function instead of raw score. No arguments.<br /><br />
  
  Lookahead - The AI will simulate depth boards into the future and try breadth random drops in each possible board in order to maximize the quality far into the future. The best performing and most patient AI.<br />
  Arguments are depth followed by breath separated by a comma such as "4, 3". Note that the number following #B in the console is the number of boards evaluated before the choice was made.<br />
  Note that increasing the arguments will cause slowdown as the AI has to analyse significantly more boards.
- </p></h2>
+ </p>
  
  <h3><a href="/index.html">Return to the main screen.</a></h3>
  </body>
